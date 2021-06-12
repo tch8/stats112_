@@ -191,12 +191,19 @@ starbucks_with_2018_pop_est <-
 states_map <- map_data("state")
 
 # map that colors state by number of Starbucks
-starbucks_us_by_state %>%
-  filter(state_name %!% c("alaska", "hawaii"))
+starbucks_with_2018_pop_est %>%
+  filter(state_name != c("alaska", "hawaii"))
   ggplot() +
   geom_map(map = states_map,
            aes(map_id = state_name,
-               fill = n)) +
+               fill = starbucks_per_10000)) +
+  geom_point(data = Starbucks %>% filter(`State/Province` != c("HI", "AK")),
+             aes(x = Longitude, y = Latitude),
+             size = .05,
+             alpha = .2, 
+             color = "goldenrod")
+    expand_limits(x = states_map$long, y = states_map$lat) + 
+    theme_map()
 ```
 
 
@@ -211,7 +218,44 @@ starbucks_us_by_state %>%
   * Connect all your locations together with a line in a meaningful way (you may need to order them differently in the original data).  
   
   * If there are other variables you want to add that could enhance your plot, do that now.  
-  
+
+```{r}
+# Talia's Favorite Places
+favorite_places_talia <- tibble(
+  place = c("Buffy's Icecream", "Chatham Seaside Links", "Chatham Light House", 
+            "Nauset Beach", "Corner Store", "Yellow Umbrella Books",
+            "Cape Escape Mini Golf", "Del Mar Bistro and Bar", "Chatham Anglers- Veterans' Park", 
+            "Chatham Cookware"),
+  long = c(-69.95572, -69.9543, -69.949856, 
+           -69.93681, -70.01594, -69.95734, 
+           -69.98507, -69.96943, -69.96306, -69.95784),
+  lat = c(41.6795, 41.68294, 41.67133,
+          41.7873, 41.70007, 41.67979, 
+          41.79704, 41.68601, 41.68501, 41.68055)
+  )
+
+#create leaflet map with data 
+leaflet(data = favorite_places_talia) %>% #base plot
+  addTiles() %>% #base map - default is openstreet map 
+  addMarkers(lng = ~long, 
+             lat = ~lat, 
+             label = ~place) #Adds markers - knows lat and long from names in data
+
+#plot with lines on it 
+leaflet(data = favorite_places_talia) %>% 
+  addProviderTiles(providers$CartoDB.DarkMatter) %>% 
+  addCircles(lng = ~long, 
+             lat = ~lat, 
+             label = ~place, 
+             weight = 10, 
+             opacity = 1, 
+             color = col2hex("darkred")) %>% 
+  addPolylines(lng = ~long, 
+               lat = ~lat, 
+               color = col2hex("darkred"))
+```
+
+
 ## Revisiting old datasets
 
 This section will revisit some datasets we have used previously and bring in a mapping component. 
