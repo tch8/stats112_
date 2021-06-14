@@ -146,6 +146,7 @@ ggmap(TCmap2) +
              alpha = 1, 
              size = 1.5)
 ```
+  
   5. Add a point to the map that indicates Macalester College and label it appropriately. There are many ways you can do think, but I think it's easiest with the `annotate()` function (see `ggplot2` cheatsheet).
 
 ```{r}
@@ -192,18 +193,21 @@ states_map <- map_data("state")
 
 # map that colors state by number of Starbucks
 starbucks_with_2018_pop_est %>%
-  filter(state_name != c("alaska", "hawaii"))
+  filter(!(state_name %in% c("alaska", "hawaii"))) %>% 
   ggplot() +
   geom_map(map = states_map,
            aes(map_id = state_name,
                fill = starbucks_per_10000)) +
-  geom_point(data = Starbucks %>% filter(`State/Province` != c("HI", "AK")),
+  geom_point(data = Starbucks %>% 
+               filter(!(`State/Province` %in% c("HI", "AK")),
+                      Country == "US"),
              aes(x = Longitude, y = Latitude),
              size = .05,
              alpha = .2, 
-             color = "goldenrod")
+             color = "goldenrod") +
     expand_limits(x = states_map$long, y = states_map$lat) + 
-    theme_map()
+    theme_map() + 
+  theme(legend.background = element_blank())
 ```
 
 
@@ -281,7 +285,24 @@ Stations<-read_csv("http://www.macalester.edu/~dshuman1/data/112/DC-Stations.csv
   9. Use the latitude and longitude variables in `Stations` to make a visualization of the total number of departures from each station in the `Trips` data. Use either color or size to show the variation in number of departures. This time, plot the points on top of a map. Use any of the mapping tools you'd like.
   
 ```{r}
+washington_dc <- get_stamenmap(
+  bbox = c(left = -76.93, bottom = 38.8, right = -77.21, top = 39.99),
+  maptype = "terrain",
+  zoom = 11)
 
+trips_perstation <- Trips %>% 
+  group_by(sstation) %>% 
+  count() %>% 
+  inner_join(Stations, by = c("sstation" = "name"))
+
+#graph of plots of the map 
+ggmap(washington_dc) + 
+  geom_point(data = trips_perstation, 
+             aes(x = long, y = lat, color = n), 
+             alpha = 0.8, 
+             size = 0.8) + 
+  theme_map() + 
+  scale_color_viridis_c(option = "E")
 ```
   
   10. Only 14.4% of the trips in our data are carried out by casual users. Create a plot that shows which area(s) have stations with a much higher percentage of departures by casual users. What patterns do you notice? Also plot this on top of a map. I think it will be more clear what the patterns are.
@@ -305,8 +326,30 @@ The following exercises will use the COVID-19 data from the NYT.
 These exercises use the datasets `MplsStops` and `MplsDemo` from the `carData` library. Search for them in Help to find out more information.
 
   14. Use the `MplsStops` dataset to find out how many stops there were for each neighborhood and the proportion of stops that were for a suspicious vehicle or person. Sort the results from most to least number of stops. Save this as a dataset called `mpls_suspicious` and display the table.  
+
+```{r}
+mpls_suspicious <- MplsStops %>% 
+  group_by(neighborhood) %>% 
+  summarise(n = n(),
+            is_sus = problem == "suspicious",
+            propsus = sum(is_sus)/n()) %>% 
+  arrange(desc(n)) %>% 
+  distinct()
+```
   
   15. Use a `leaflet` map and the `MplsStops` dataset to display each of the stops on a map as a small point. Color the points differently depending on whether they were for suspicious vehicle/person or a traffic stop (the `problem` variable). HINTS: use `addCircleMarkers`, set `stroke = FAlSE`, use `colorFactor()` to create a palette.  
+  
+```{r}
+# Color points 
+pal <- colorFactor("viridis", 
+                   domain = MplsStops$problem)
+#leaflet map
+leaflet(MplsStops) %>% 
+  addTiles() %>% 
+  addCircleMarkers(fillColor = ~pal(problem),
+                   stroke = FALSE,
+                   fillOpacity = 0.7)
+```
   
   16. Save the folder from moodle called Minneapolis_Neighborhoods into your project/repository folder for this assignment. Make sure the folder is called Minneapolis_Neighborhoods. Use the code below to read in the data and make sure to **delete the `eval=FALSE`**. Although it looks like it only links to the .sph file, you need the entire folder of files to create the `mpls_nbhd` data set. These data contain information about the geometries of the Minneapolis neighborhoods. Using the `mpls_nbhd` dataset as the base file, join the `mpls_suspicious` and `MplsDemo` datasets to it by neighborhood (careful, they are named different things in the different files). Call this new dataset `mpls_all`.
 
@@ -316,8 +359,15 @@ mpls_nbhd <- st_read("Minneapolis_Neighborhoods/Minneapolis_Neighborhoods.shp", 
 
   17. Use `leaflet` to create a map from the `mpls_all` data  that colors the neighborhoods by `prop_suspicious`. Display the neighborhood name as you scroll over it. Describe what you observe in the map.
   
-  18. Use `leaflet` to create a map of your own choosing. Come up with a question you want to try to answer and use the map to help answer that question. Describe what your map shows. 
+```{r}
+
+```
   
+  18. Use `leaflet` to create a map of your own choosing. Come up with a question you want to try to answer and use the map to help answer that question. Describe what your map shows. 
+
+```{r}
+
+```
   
 ## GitHub link
 
