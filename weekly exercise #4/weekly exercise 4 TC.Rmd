@@ -18,16 +18,16 @@ output:
 ```{r libraries}
 library(tidyverse)     
 library(lubridate)     
-library(openintro)     # for the abbr2state() function
+library(openintro)     
 library(palmerpenguins)
 library(maps)          
 library(ggmap)         
-library(gplots)        # for col2hex() function
-library(RColorBrewer)  # for color palettes
+library(gplots)       
+library(RColorBrewer)  
 library(sf)            
 library(leaflet)       
-library(carData)       # for Minneapolis police stops data
-library(ggthemes)      # for more themes (including theme_map())
+library(carData)       
+library(ggthemes)      
 theme_set(theme_minimal())
 ```
 
