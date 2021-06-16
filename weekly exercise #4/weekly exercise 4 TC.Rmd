@@ -594,3 +594,5 @@ leaflet(MplsStops) %>%
   19. Below, provide a link to your GitHub page with this set of Weekly Exercises. Specifically, if the name of the file is 04_exercises.Rmd, provide a link to the 04_exercises.md file, which is the one that will be most readable on GitHub.
 
 [github weekly exercise #4](https://github.com/tch8/stats112_/tree/main/weekly%20exercise%20%234)
+
+[md file link](https://github.com/tch8/stats112_/blob/main/weekly%20exercise%20%234/weekly-exercise-4-TC.md)
