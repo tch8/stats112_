@@ -60,16 +60,6 @@ covid19 <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/mas
 
 ## Put your homework on GitHub!
 
-If you were not able to get set up on GitHub last week, go [here](https://github.com/llendway/github_for_collaboration/blob/master/github_for_collaboration.md) and get set up first. Then, do the following (if you get stuck on a step, don't worry, I will help! You can always get started on the homework and we can figure out the GitHub piece later):
-
-* Create a repository on GitHub, giving it a nice name so you know it is for the 4th weekly exercise assignment (follow the instructions in the document/video).  
-* Copy the repo name so you can clone it to your computer. In R Studio, go to file --> New project --> Version control --> Git and follow the instructions from the document/video.  
-* Download the code from this document and save it in the repository folder/project on your computer.  
-* In R Studio, you should then see the .Rmd file in the upper right corner in the Git tab (along with the .Rproj file and probably .gitignore).  
-* Check all the boxes of the files in the Git tab under Stage and choose commit.  
-* In the commit window, write a commit message, something like "Initial upload" would be appropriate, and commit the files.  
-* Either click the green up arrow in the commit window or close the commit window and click the green up arrow in the Git tab to push your changes to GitHub.  
-* Refresh your GitHub page (online) and make sure the new documents have been pushed out.  
 * Back in R Studio, knit the .Rmd file. When you do that, you should have two (as long as you didn't make any changes to the .Rmd file, in which case you might have three) files show up in the Git tab - an .html file and an .md file. The .md file is something we haven't seen before and is here because I included `keep_md: TRUE` in the YAML heading. The .md file is a markdown (NOT R Markdown) file that is an interim step to creating the html file. They are displayed fairly nicely in GitHub, so we want to keep it and look at it there. Click the boxes next to these two files, commit changes (remember to include a commit message), and push them (green up arrow).  
 * As you work through your homework, save and commit often, push changes occasionally (maybe after you feel finished with an exercise?), and go check to see what the .md file looks like on GitHub.  
 * If you have issues, let me know! This is new to many of you and may not be intuitive at first. But, I promise, you'll get the hang of it! 
@@ -86,6 +76,7 @@ If you were not able to get set up on GitHub last week, go [here](https://github
 * Use good coding practice. Read the short sections on good code with [pipes](https://style.tidyverse.org/pipes.html) and [ggplot2](https://style.tidyverse.org/ggplot2.html). **This is part of your grade!**
 
 * When you are finished with ALL the exercises, uncomment the options at the top so your document looks nicer. Don't do it before then, or else you might miss some important warnings and messages.
+
 
 
 ## Warm-up exercises from tutorial
@@ -177,6 +168,9 @@ ggmap(TCmap) +
 ```
 
 
+
+
+
 ### Choropleth maps with Starbucks data (`geom_map()`)
 
 The example I showed in the tutorial did not account for population of each state in the map. In the code below, a new variable is created, `starbucks_per_10000`, that gives the number of Starbucks per 10,000 people. It is in the `starbucks_with_2018_pop_est` dataset.
@@ -196,7 +190,14 @@ starbucks_with_2018_pop_est <-
 
   6. **`dplyr` review**: Look through the code above and describe what each line of code does.
 
+The first line of code reads in the CSV with the data of the US census 2018. Then, the next line separates the state column into the state name and the dot (.) before the name. Then we select everything except the new dot column. Select allows you to see certain columns and variables. Finally, we convert the state names to all lower case through the mutate function. 
+
+The next line of code is a left join of a data set with anothr data set. Left join is a way to combine variables and values from one data set to another one. So we are taking the starbucks_us_by_state data set and left joining it with the census data set from 2018. In order to do the left join we need to say what it should join by. So we define that by saying the variable name from the starbucks data set is equal to the one from the census. And then we mutate to add another variable of starbucks per 10,000 people which equals n divided by the estimated population of the state times 10,000. 
+
+
   7. Create a choropleth map that shows the number of Starbucks per 10,000 people on a map of the US. Use a new fill color, add points for all Starbucks in the US (except Hawaii and Alaska), add an informative title for the plot, and include a caption that says who created the plot (you!). Make a conclusion about what you observe.
+  
+  I observe that there are more starbucks per 10,000 people in the metropolitan areas and cities. Especially on the east coast, there are a large portion of starbucks in the New York City area. I also notice that those states that have a larger population tend to have a ton of starbucks than those states who have a smaller population comparitively. 
 
 ```{r}
 #US states map information - coordinates used to draw borders
@@ -224,6 +225,9 @@ starbucks_with_2018_pop_est %>%
   theme(legend.background = element_blank(),
         plot.title.position = "plot")
 ```
+
+
+
 
 
 ### A few of your favorite things (`leaflet`)
@@ -275,11 +279,16 @@ leaflet(data = favorite_places_talia) %>%
 ```
 
 
+
+
+
+
+
 ## Revisiting old datasets
 
 This section will revisit some datasets we have used previously and bring in a mapping component. 
 
-## Bicycle-Use Patterns
+### Bicycle-Use Patterns
 
 The data come from Washington, DC and cover the last quarter of 2014.
 
@@ -353,7 +362,10 @@ ggmap(washington_dc) +
         plot.caption.position = "plot")
 ```
   
-## COVID-19 data
+  
+  
+  
+### COVID-19 data
 
 The following exercises will use the COVID-19 data from the NYT.
 
@@ -385,7 +397,8 @@ covid19cum %>%
        caption = "Plot Created by Talia C, data from COVID-19 NYT Data") + 
   theme(legend.background = element_blank(),
         plot.title.position = "plot", 
-        plot.background = element_rect(fill = "lightgrey"))
+        plot.background = element_rect(fill = "lightgrey")) +
+  scale_fill_continuous(labels = scales::comma)
 ```
 
 
@@ -421,7 +434,8 @@ covid19cum_with_2018_pop_est %>%
        caption = "Plot Created by Talia C, data from COVID-19 NYT Data") + 
   theme(legend.background = element_blank(),
         plot.title.position = "plot", 
-        plot.background = element_rect(fill = "lightgrey"))
+        plot.background = element_rect(fill = "lightgrey")) +
+  scale_fill_continuous(labels = scales::comma)
 ```
   
   13. **CHALLENGE** Choose 4 dates spread over the time period of the data and create the same map as in exercise 12 for each of the dates. Display the four graphs together using faceting. What do you notice?
@@ -463,6 +477,8 @@ covid19cum_with_2018_pop_est %>%
         plot.background = element_rect(fill = "lightgrey"))
 ```
 
+
+
 ## Minneapolis police stops
 
 These exercises use the datasets `MplsStops` and `MplsDemo` from the `carData` library. Search for them in Help to find out more information.
@@ -470,6 +486,17 @@ These exercises use the datasets `MplsStops` and `MplsDemo` from the `carData` l
   14. Use the `MplsStops` dataset to find out how many stops there were for each neighborhood and the proportion of stops that were for a suspicious vehicle or person. Sort the results from most to least number of stops. Save this as a dataset called `mpls_suspicious` and display the table.  
 
 ```{r}
+#display table 
+MplsStops %>% 
+  group_by(neighborhood) %>% 
+  summarise(n = n(),
+            is_sus = problem == "suspicious",
+            propsus = sum(is_sus)/n()) %>% 
+  arrange(desc(n)) %>% 
+  select(neighborhood, n, propsus) %>% 
+  distinct()
+
+#save new dataset 
 mpls_suspicious <- MplsStops %>% 
   group_by(neighborhood) %>% 
   summarise(n = n(),
@@ -503,19 +530,64 @@ leaflet(MplsStops) %>%
 
 ```{r}
 mpls_nbhd <- st_read("Minneapolis_Neighborhoods/Minneapolis_Neighborhoods.shp", quiet = TRUE)
+
+mpls_all <- left_join(mpls_nbhd, MplsDemo, by = c("BDNAME" = "neighborhood"))
+mpls_all2 <- left_join(mpls_all, mpls_suspicious, by = c("BDNAME" = "neighborhood"))
 ```
 
   17. Use `leaflet` to create a map from the `mpls_all` data  that colors the neighborhoods by `prop_suspicious`. Display the neighborhood name as you scroll over it. Describe what you observe in the map.
   
+  I observe that there is a wide range of the proportion of suspicious. However the lower proportions seem to be clustered together in the northern part of Minneapolis, while the higher amount of suspiciousness occurs in the southern part of the city. 
+  
 ```{r}
-
+# Color points 
+pal <- colorFactor("viridis", 
+                   domain = mpls_all2$propsus)
+#leaflet map
+leaflet(mpls_all2) %>% 
+  addTiles() %>% 
+  addPolygons(
+    stroke = FALSE, 
+    fillColor = ~pal(propsus), 
+    fillOpacity = 0.7, 
+    smoothFactor = 0.5, 
+    highlight = highlightOptions(weight = 5, 
+                                 color = "black",
+                                 fillOpacity = 0.9,
+                                 bringToFront = FALSE),
+    label = ~ BDNAME) %>% 
+  addLegend(pal = pal,
+            values = ~ propsus, 
+            opacity = 0.5, 
+            title = NULL,
+            position = "bottomright") 
 ```
   
+  
   18. Use `leaflet` to create a map of your own choosing. Come up with a question you want to try to answer and use the map to help answer that question. Describe what your map shows. 
+  
+  Is there a pattern for if vehicle searches occurred or not by neighborhood? 
+  
+  My graph shows all the stops counted in the MplsStops dataset and if there was a vehicle search or not. As we can see from the graph, most of the time, there are mostly no searches as the graph is overwhelmingly purple. Yet sprinkled in here and there is a yellow dot which means that the vehicle was searched. I wonder if there is a correlation between the neighborhood and whether or not the vehicle was searched. 
 
 ```{r}
-
+# Color points 
+pal <- colorFactor("viridis", 
+                   domain = MplsStops$vehicleSearch)
+#leaflet map
+leaflet(MplsStops) %>% 
+  addTiles() %>% 
+  addCircleMarkers(fillColor = ~ pal(vehicleSearch),
+                   stroke = FALSE,
+                   fillOpacity = 0.7,
+                   weight = 0.003) %>% 
+  addLegend(pal = pal, 
+            values = ~ vehicleSearch, 
+            opacity = 0.5, 
+            title = NULL,
+            position = "bottomright") 
 ```
+  
   
 ## GitHub link
 
