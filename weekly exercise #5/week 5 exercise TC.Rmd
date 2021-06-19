@@ -82,11 +82,83 @@ Once your repository is created, you should always open your **project** rather 
 ## Warm-up exercises from tutorial
 
   1. Choose 2 graphs you have created for ANY assignment in this class and add interactivity using the `ggplotly()` function.
+
+### Trout Graph from Tidy Tuesday
+```{r}
+stocked <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-06-08/stocked.csv')
+
+fish_1 <- stocked %>%
+  filter(SPECIES %in% c("BKT", "BNT", "LAT", "RBT")) %>% 
+  group_by(SPECIES, YEAR) %>%
+  summarize(total_stocked = sum(NO_STOCKED)) %>% 
+  ggplot(mapping = aes(x = YEAR, 
+                       y = total_stocked, 
+                       color = SPECIES)) +
+  geom_line() +
+  geom_text(aes(label = SPECIES)) +
+  scale_y_continuous(labels = scales::comma) + 
+  scale_color_discrete(name = "species", 
+                       labels = c("Brook Trout", 
+                                  "Brown Trout", 
+                                  "Lake Trout", 
+                                  "Rainbow Trout")) + 
+  labs(x = NULL, 
+       y = NULL,
+       title = "Total Trout Stocked in the Great Lakes Over the Years",
+       caption = "Plot created by Talia C, data from Great Lakes Fishing Commission") + 
+  theme(legend.position = "none") +
+  transition_reveal(YEAR) 
+
+animate(fish_1, duration = 15)
+```
+Save animation and re load into file: 
+
+```{r, eval=FALSE}
+anim_save("fish_1.gif")
+
+knitr::include_graphics("fish_1.gif")
+```
+
+
+
+### Covid19 graph 
+```{r}
+covid19 <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+
+covid_1 <- covid19 %>%
+  filter(state %in% c("Minnesota", "Wisconsin", "Iowa", "North Dakota", "South Dakota")) %>%
+  ggplot(mapping = aes(x = date, 
+                       y = cases, 
+                       color = state)) +
+  geom_line() + 
+  geom_text(aes(label = state)) +
+  scale_y_log10(labels = scales::comma) +
+  labs(x = NULL, 
+       y = NULL, 
+       title = "Cumulative COVID-19 Cases Over Time",
+       subtitle = "Date: {frame_along}",
+       caption = "Plot created by Talia C, data from covid19") +
+  theme(legend.position = "none") +
+  transition_reveal(date)
+
+animate(covid_1, duration = 15)
+```
+Save animation and re load into file: 
+
+```{r, eval=FALSE}
+anim_save("covid_1.gif")
+
+knitr::include_graphics("covid_1.gif")
+```
   
+  
+  
+### Warmup Exercise #2
+
   2. Use animation to tell an interesting story with the `small_trains` dataset that contains data from the SNCF (National Society of French Railways). These are Tidy Tuesday data! Read more about it [here](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-02-26).
 
 ```{r}
-
+small_trains %>%
 ```
 
 ## Garden data
@@ -104,8 +176,13 @@ garden_harvest %>%
   filter(vegetable == "tomatoes") %>% 
   group_by(date, variety) %>% 
   summarize(daily_harvest_lb = sum(weight)*0.00220462) %>% 
-  ungroup() %>% 
-  complete(variety, date, fill = list(daily_harvest_lb = 0))
+  ungroup() %>%
+  complete(variety, date, fill = list(daily_harvest_lb = 0)) %>% 
+  mutate(cum_harvest_lb = cumsum(daily_harvest_lb)) %>%
+  ggplot(mapping = aes(x = date,
+                       y = cum_harvest_lb,
+                       fill = variety)) +
+  geom_area(position = "stack")
 ```
 
 
