@@ -33,6 +33,7 @@ library(gganimate)     # for adding animation layers to ggplots
 library(transformr)    # for "tweening" (gganimate)
 library(gifski)        # need the library for creating gifs but don't need to load each time
 library(shiny)         # for creating interactive apps
+library(ggimage)
 theme_set(theme_minimal())
 ```
 
@@ -160,6 +161,7 @@ knitr::include_graphics("covid_1.gif")
 
 ```{r}
 small_trains %>%
+  filter(service == "International")
 ```
 
 ## Garden data
@@ -201,6 +203,7 @@ knitr::include_graphics("garden_harvest2.gif")
 ```
 
 
+
 ## Maps, animation, and movement!
 
   4. Map my `mallorca_bike_day7` bike ride using animation! 
@@ -214,9 +217,36 @@ knitr::include_graphics("garden_harvest2.gif")
   * Add something of your own! And comment on if you prefer this to the static map and why or why not.
   
 ```{r}
+mallorca_map <- get_stamenmap(
+  bbox = c(left = 2.3245, bottom = 39.4439, right = 2.7900, top = 39.7713),
+  maptype = "terrain",
+  zoom = 12)
+
+bikeimage_link <- "https://raw.githubusercontent.com/llendway/animation_and_interactivity/master/bike.png"
+
 mallorca_bike_day7 <- mallorca_bike_day7 %>% 
-  mutate(image = "bike.png")
+  mutate(image = bikeimage_link)
   
+mallorca_1 <- ggmap(mallorca_map) + 
+  geom_path(data = mallorca_bike_day7, 
+            aes(x = lon, 
+                y = lat, 
+                color = ele), 
+            size = 5) + 
+  geom_image(data = mallorca_bike_day7,
+             aes(x = lon,
+                 y = lat, 
+                 image = bikeimage_link,
+                 size = 0.1)) +
+  scale_color_viridis_c() +
+  theme_map() + 
+  theme(legend.background = element_blank()) + 
+  labs(title = "Mallorca Bike Day 7",
+       subtitle = "Time: {frame_along}",
+       color = "Elevation") + 
+  transition_reveal(time)
+
+animate(mallorca_1, duration = 20, end_pause = 7)
 ```
   
   5. In this exercise, you get to meet my sister, Heather! She is a proud Mac grad, currently works as a Data Scientist at 3M where she uses R everyday, and for a few years (while still holding a full-time job) she was a pro triathlete. You are going to map one of her races. The data from each discipline of the Ironman 70.3 Pan Am championships, Panama is in a separate file - `panama_swim`, `panama_bike`, and `panama_run`. Create a similar map to the one you created with my cycling data. You will need to make some small changes: 1. combine the files (HINT: `bind_rows()`, 2. make the leading dot a different color depending on the event (for an extra challenge, make it a different image using `geom_image()!), 3. CHALLENGE (optional): color by speed, which you will need to compute on your own from the data. You can read Heather's race report [here](https://heatherlendway.com/2016/02/10/ironman-70-3-pan-american-championships-panama-race-report/). She is also in the Macalester Athletics [Hall of Fame](https://athletics.macalester.edu/honors/hall-of-fame/heather-lendway/184) and still has records at the pool. 
@@ -229,16 +259,27 @@ panama_map <- get_stamenmap(
 
 panama_races <- bind_rows(panama_bike, panama_swim, panama_run)
 
-panama_races %>% 
-ggmap(panama_map) %>% 
-  geom_path(aes(x = lon, 
-                y = lat),
+#plot graph on map 
+ggmap(panama_map) + 
+geom_path(data = panama_races, 
+          aes(x = lon, 
+                          y = lat),
             size = 1) +
-  geom_point(aes(x = lon, 
-                 y = lat), 
+geom_point(mapping = aes(x = lon, 
+                           y = lat), 
              color = event, 
              size = 2.5) + 
-  scale_color_manual(values = c("Bike" = ""))
+scale_color_manual(values = c("Bike" = "darkblue",
+                                "Run" = "darkgreen",
+                                "Swim" = "lightpurple")) + 
+labs(x = "",
+     y = "",
+     color = "Event",
+     title = "Heather's Triathalon Race Path in Panama") +
+theme_map() + 
+theme(legend.background = element_blank(),
+      legend.position = "bottom") +
+transition_reveal(time)
 ```
   
 ## COVID-19 data
@@ -297,7 +338,11 @@ census_pop_est_2018 <- read_csv("https://www.dropbox.com/s/6txwv3b4ng7pepe/us_ce
   select(-dot) %>% 
   mutate(state = str_to_lower(state))
 
-states_map <- map_data("state")
+covid_per_10000 %>% 
+  filter(day == "Friday") %>% 
+  ggplot() + 
+  geom_map(map = states_map, 
+           aes(id = state))
 ```
 
 ## Your first `shiny` app (for next week!)
