@@ -6,6 +6,7 @@ covid19 <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/mas
 
 state_options <- covid19 %>% 
   distinct(state) %>% 
+  filter(!(state %in% c("Virgin Islands", "Northern Mariana Islands", "Puerto Rico", "Guam"))) %>% 
   pull(state)
 
 ui <- fluidPage( "COVID19 Cases App",
@@ -30,19 +31,19 @@ server <- function(input, output) {
       covid19 %>% 
         filter(cases >= 20,
                state == c(input$state1, 
-                         input$state2, 
-                         input$state3)) %>%
+                          input$state2, 
+                          input$state3)) %>%
         ggplot(aes(x = date,
                    y = cases,
                    color = state)) +
         geom_line() +
-        scale_y_log10() +
+        scale_y_log10(labels = scales::comma) +
         labs(x = "",
              y = "",
-             title = "Log of Cumulative Cases Per State over Time",
-             caption = "Data from COVID 19 NY Times") +
-        theme(legend.position = "none",
-              plot.title.position = "plot",
+             title = "Log of Cumulative Cases over Time",
+             caption = "Data from COVID 19 NY Times",
+             color = "State") +
+        theme(plot.title.position = "plot",
               plot.caption.position = "plot")
     })
 }
