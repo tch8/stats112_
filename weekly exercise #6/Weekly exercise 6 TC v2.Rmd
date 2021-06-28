@@ -34,7 +34,8 @@ library(shiny)
 library(patchwork)     
 library(gt)            
 library(rvest)         
-library(robotstxt)     
+library(robotstxt)
+library(paletteer)
 theme_set(theme_minimal())
 ```
 
@@ -109,10 +110,10 @@ grocery_data <- read_csv("Groceries_dataset.csv")
 
   4. CHALLENGE(not graded): Write code to replicate the table shown below (open the .html file to see it) created from the `garden_harvest` data as best as you can. When you get to coloring the cells, I used the following line of code for the `colors` argument:
   
-```{r, eval=FALSE}
+```{r}
 garden_harvest %>% 
   filter (vegetable %in% c("beans", "carrots", "tomatoes")) %>% 
-  mutate(month = month(date, label = TRUE, abbr = TRUE) %>% 
+  mutate(month = month(date, label = TRUE, abbr = TRUE)) %>% 
   group_by(variety) %>% 
   mutate(weight_lbs = weight * 0.00220462, 
          totweight = sum(weight_lbs),
@@ -125,15 +126,22 @@ garden_harvest %>%
          "Total Weight" = totweight, 
          month = month) %>% 
   gt(rowname_col = "Variety",
-     groupname_col = "Vegetable") %>% 
-  tab_header(title = "Total Weight (in Lbs) of Vegetable Varieties",
-             subtitle = md("For Lettuce, Kale, Spinach, and Swiss Chard")) %>% 
-  tab_footnote(
-    footnote = "Weight is in Pounds.",
-    locations = cells_column_labels(
-      columns = vars("Total Weight"))) %>% 
-  tab_options(row_group.background.color = "#BEDAE0",
-              row_group.font.weight = "bold") 
+     groupname_col = "Vegetable") %>%
+  row_group_order(groups = c("Beans", "Carrots", "Tomatoes")) %>%
+ fmt_number(columns = vars(c("Total Weight")), decimals = 2) %>% 
+  tab_header(title = "Total Weight (in Lbs) of Vegetable Varieties") %>% 
+  tab_options(row_group.font.weight = "bold") %>% 
+  summary_rows(groups = TRUE, 
+              columns = vars(c("Total Weight")),
+               fns = list(Sum = "sum"),
+               formatter = fmt_number) %>% 
+  cols_align(align = "right", columns = TRUE) %>%
+  data_color(columns = vars(c("Total Weight")),
+             colors = scales::col_numeric(
+               palette = paletteer::paletteer_d(
+                 palette = "RColorBrewer::YlGn") %>% 
+                 as.character(),
+               domain = NULL))
 ```
 
   5. Create a table using `gt` with data from your project or from the `garden_harvest` data if your project data aren't ready.
