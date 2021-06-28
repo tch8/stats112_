@@ -16,27 +16,25 @@ output:
 ```
 
 ```{r libraries}
-library(tidyverse)     # for data cleaning and plotting
-library(gardenR)       # for Lisa's garden data
-library(lubridate)     # for date manipulation
-library(openintro)     # for the abbr2state() function
-library(palmerpenguins)# for Palmer penguin data
-library(maps)          # for map data
-library(ggmap)         # for mapping points on maps
-library(gplots)        # for col2hex() function
-library(RColorBrewer)  # for color palettes
-library(sf)            # for working with spatial data
-library(leaflet)       # for highly customizable mapping
-library(ggthemes)      # for more themes (including theme_map())
-library(plotly)        # for the ggplotly() - basic interactivity
-library(gganimate)     # for adding animation layers to ggplots
-library(gifski)        # for creating the gif (don't need to load this library every time,but need it installed)
-library(transformr)    # for "tweening" (gganimate)
-library(shiny)         # for creating interactive apps
-library(patchwork)     # for nicely combining ggplot2 graphs  
-library(gt)            # for creating nice tables
-library(rvest)         # for scraping data
-library(robotstxt)     # for checking if you can scrape data
+library(tidyverse)    
+library(gardenR)       
+library(lubridate)   
+library(openintro)     
+library(maps)          
+library(ggmap)        
+library(gplots)      
+library(RColorBrewer)  
+library(sf)           
+library(ggthemes)     
+library(plotly)        
+library(gganimate)     
+library(gifski)        
+library(transformr)   
+library(shiny)         
+library(patchwork)     
+library(gt)            
+library(rvest)         
+library(robotstxt)     
 theme_set(theme_minimal())
 ```
 
@@ -74,9 +72,13 @@ Once your repository is created, you should always open your **project** rather 
   1. This app will also use the COVID data. Make sure you load that data and all the libraries you need in the `app.R` file you create. Below, you will post a link to the app that you publish on shinyapps.io. You will create an app to compare states' cumulative number of COVID cases over time. The x-axis will be number of days since 20+ cases and the y-axis will be cumulative cases on the log scale (`scale_y_log10()`). We use number of days since 20+ cases on the x-axis so we can make better comparisons of the curve trajectories. You will have an input box where the user can choose which states to compare (`selectInput()`) and have a submit button to click once the user has chosen all states they're interested in comparing. The graph should display a different line for each state, with labels either on the graph or in a legend. Color can be used if needed. 
   
 ```{r}
-covid19 %>% 
-  filter(cases >= 20) %>%
-  ggplot(aes(x = date,
+covid19 %>%
+  group_by(state) %>% 
+  arrange(date) %>% 
+  mutate(tfcase = cases >= 20,
+         over20day = which.max(tfcase),
+         days_since_20 = row_number() - over20day) %>% 
+  ggplot(aes(x = days_since_20,
              y = cases,
              color = state)) +
   geom_line() +
@@ -108,22 +110,60 @@ grocery_data <- read_csv("Groceries_dataset.csv")
   4. CHALLENGE(not graded): Write code to replicate the table shown below (open the .html file to see it) created from the `garden_harvest` data as best as you can. When you get to coloring the cells, I used the following line of code for the `colors` argument:
   
 ```{r, eval=FALSE}
-colors = scales::col_numeric(
-      palette = paletteer::paletteer_d(
-        palette = "RColorBrewer::YlGn"
-      ) %>% as.character()
+garden_harvest %>% 
+  filter (vegetable %in% c("beans", "carrots", "tomatoes")) %>% 
+  mutate(month = month(date, label = TRUE, abbr = TRUE) %>% 
+  group_by(variety) %>% 
+  mutate(weight_lbs = weight * 0.00220462, 
+         totweight = sum(weight_lbs),
+         variety = str_to_title(variety),
+         vegetable = str_to_title(vegetable)) %>%
+  group_by(Variety, month) %>% 
+  distinct() %>% 
+  tibble(Variety = variety,
+         Vegetable = vegetable,
+         "Total Weight" = totweight, 
+         month = month) %>% 
+  gt(rowname_col = "Variety",
+     groupname_col = "Vegetable") %>% 
+  tab_header(title = "Total Weight (in Lbs) of Vegetable Varieties",
+             subtitle = md("For Lettuce, Kale, Spinach, and Swiss Chard")) %>% 
+  tab_footnote(
+    footnote = "Weight is in Pounds.",
+    locations = cells_column_labels(
+      columns = vars("Total Weight"))) %>% 
+  tab_options(row_group.background.color = "#BEDAE0",
+              row_group.font.weight = "bold") 
 ```
-
-![](garden_table.html){width=600, height=1000}
-
 
   5. Create a table using `gt` with data from your project or from the `garden_harvest` data if your project data aren't ready.
   
 ```{r}
-garden_harvest %>% 
-  tibble(variety = variety(vegetable),
-         weight = ) %>%
-  arrange(desc(size)) %>%
+tab1 <- garden_harvest %>% 
+  filter (vegetable %in% c("lettuce", "kale", "spinach", "swiss chard")) %>% 
+  group_by(variety) %>% 
+  mutate(weight_lbs = weight * 0.00220462, 
+         totweight = sum(weight_lbs),
+         variety = str_to_title(variety),
+         vegetable = str_to_title(vegetable)) %>%
+  tibble(Variety = variety,
+         Vegetable = vegetable,
+         "Total Weight" = totweight) %>% 
+  select(Variety, Vegetable, "Total Weight") %>% 
+  distinct() %>% 
+  gt(rowname_col = "Variety",
+     groupname_col = "Vegetable") %>% 
+  tab_header(title = "Total Weight (in Lbs) of Vegetable Varieties",
+             subtitle = md("For Lettuce, Kale, Spinach, and Swiss Chard")) %>% 
+  tab_footnote(
+    footnote = "Weight is in Pounds.",
+    locations = cells_column_labels(
+      columns = vars("Total Weight"))) %>% 
+  tab_options(row_group.background.color = "#BEDAE0",
+              row_group.font.weight = "bold") %>% 
+  as_raw_html()
+
+tab1
 ```
   
   6. Use `patchwork` operators and functions to combine at least two graphs using your project data or `garden_harvest` data if your project data aren't read.
