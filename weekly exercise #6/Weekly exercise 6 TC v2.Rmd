@@ -72,6 +72,8 @@ Once your repository is created, you should always open your **project** rather 
 
   1. This app will also use the COVID data. Make sure you load that data and all the libraries you need in the `app.R` file you create. Below, you will post a link to the app that you publish on shinyapps.io. You will create an app to compare states' cumulative number of COVID cases over time. The x-axis will be number of days since 20+ cases and the y-axis will be cumulative cases on the log scale (`scale_y_log10()`). We use number of days since 20+ cases on the x-axis so we can make better comparisons of the curve trajectories. You will have an input box where the user can choose which states to compare (`selectInput()`) and have a submit button to click once the user has chosen all states they're interested in comparing. The graph should display a different line for each state, with labels either on the graph or in a legend. Color can be used if needed. 
   
+  
+  
 ```{r}
 covid19 %>%
   group_by(state) %>% 
@@ -177,5 +179,75 @@ tab1
   6. Use `patchwork` operators and functions to combine at least two graphs using your project data or `garden_harvest` data if your project data aren't read.
   
 ```{r}
+#new dataset with most recent date for each Variety 
+garden_mostrecent_cumsum <- garden_harvest %>%
+  filter (vegetable %in% c("lettuce", "kale", "spinach", "swiss chard")) %>% 
+  mutate (weight_lb = weight * 0.00220462) %>% 
+  group_by (variety, date) %>% 
+  summarize (total_weight = sum(weight_lb)) %>%
+  mutate (cum_sum_weight = cumsum(total_weight),
+          Variety = str_to_title(variety),
+          date_mr = max(date)) %>% 
+  filter(date == date_mr)
 
+#first graph of data 
+graph1 <- garden_harvest %>%
+  filter (vegetable %in% c("lettuce", "kale", "spinach", "swiss chard")) %>% 
+  mutate (weight_lb = weight * 0.00220462) %>% 
+  group_by (variety, date) %>% 
+  summarize (total_weight = sum(weight_lb)) %>%
+  mutate (cum_sum_weight = cumsum(total_weight),
+          Variety = str_to_title(variety)) %>%
+  ggplot (mapping = aes(x = date, 
+                        y = cum_sum_weight, 
+                        color = Variety)) +
+  geom_line() + 
+  geom_text(data = garden_mostrecent_cumsum,
+            aes(label = Variety),
+            hjust = "inward",
+            angle = -2) +
+  labs(x = "", 
+       y = "", 
+       title = "Cumulative Weight Harvested by Variety Over Time") +
+  theme_minimal() + 
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x  = element_blank(),
+        plot.title.position = "plot",
+        plot.caption.position = "plot",
+        legend.position = "none")
+
+
+# second graph 
+graph2 <- garden_harvest %>% 
+  filter (vegetable %in% c("lettuce", "kale", "spinach", "swiss chard")) %>% 
+  mutate (weight_lb = weight * 0.00220462,
+          variety = str_to_title(variety))%>% 
+  group_by(variety) %>%
+  summarize(first_harvest = min(date),
+            total_harvest = sum(weight_lb)) %>%
+  arrange(first_harvest) %>% 
+  ggplot(mapping = aes(x = first_harvest,
+                       y = total_harvest,
+                       color = variety)) +
+  geom_point() +
+  geom_text(aes(label = variety),
+            hjust = "inward",
+            angle = -2) +
+  labs(x = "", 
+       y = "", 
+       title = "First Date Harvested vs, Total Amount Harvested in Pounds") +
+  theme_minimal() + 
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x  = element_blank(),
+        plot.title.position = "plot",
+        plot.caption.position = "plot",
+        legend.position = "none")
+
+
+graph1 + plot_spacer() + graph2 +
+  plot_layout(widths = 7,
+              heights = 3) + 
+  plot_annotation(title = "The Jungle Garden",
+                  subtitle = "A look into the differences between the Varieties of Lettuce, Kale, Spinach, and Swiss Chard",
+                  caption = "Plots created by Talia C, data from gardenR package")
 ```

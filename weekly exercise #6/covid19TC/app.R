@@ -2,6 +2,7 @@
 library(shiny)
 library(tidyverse)
 library(plotly)
+library(rsconnect)
 
 covid19 <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
 
