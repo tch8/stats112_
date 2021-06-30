@@ -54,6 +54,7 @@ Go [here](https://github.com/llendway/github_for_collaboration/blob/master/githu
 
 Once your repository is created, you should always open your **project** rather than just opening an .Rmd file. You can do that by either clicking on the .Rproj file in your repository folder on your computer. Or, by going to the upper right hand corner in R Studio and clicking the arrow next to where it says Project: (None). You should see your project come up in that list if you've used it recently. You could also go to File --> Open Project and navigate to your .Rproj file. 
 
+
 ## Instructions
 
 * Put your name at the top of the document. 
@@ -72,29 +73,8 @@ Once your repository is created, you should always open your **project** rather 
 
   1. This app will also use the COVID data. Make sure you load that data and all the libraries you need in the `app.R` file you create. Below, you will post a link to the app that you publish on shinyapps.io. You will create an app to compare states' cumulative number of COVID cases over time. The x-axis will be number of days since 20+ cases and the y-axis will be cumulative cases on the log scale (`scale_y_log10()`). We use number of days since 20+ cases on the x-axis so we can make better comparisons of the curve trajectories. You will have an input box where the user can choose which states to compare (`selectInput()`) and have a submit button to click once the user has chosen all states they're interested in comparing. The graph should display a different line for each state, with labels either on the graph or in a legend. Color can be used if needed. 
   
+[Shiny App](https://tch8.shinyapps.io/Covid19AppTC/?_ga=2.86719581.411906802.1625020589-1339200620.1624630560)
   
-  
-```{r}
-covid19 %>%
-  group_by(state) %>% 
-  arrange(date) %>% 
-  mutate(tfcase = cases >= 20,
-         over20day = which.max(tfcase),
-         days_since_20 = row_number() - over20day) %>% 
-  ggplot(aes(x = days_since_20,
-             y = cases,
-             color = state)) +
-  geom_line() +
-  scale_y_log10() +
-  scale_y_continuous(labels = scales::comma) +
-  labs(x = "",
-       y = "",
-       title = "Log of Cumulative Cases Per State over Time",
-       caption = "Data from COVID 19 NY Times") +
-  theme(legend.position = "none",
-        plot.title.position = "plot",
-        plot.caption.position = "plot")
-```
   
 ## Warm-up exercises from tutorial
 
