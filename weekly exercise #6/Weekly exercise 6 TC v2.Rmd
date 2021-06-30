@@ -1,6 +1,6 @@
 ---
 title: 'Weekly Exercises #6'
-author: "Talia"
+author: "Talia C"
 output: 
   html_document:
     keep_md: TRUE
@@ -12,7 +12,7 @@ output:
 
 
 ```{r setup, include=FALSE}
-#knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
+knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
 ```
 
 ```{r libraries}
@@ -54,6 +54,11 @@ Go [here](https://github.com/llendway/github_for_collaboration/blob/master/githu
 
 Once your repository is created, you should always open your **project** rather than just opening an .Rmd file. You can do that by either clicking on the .Rproj file in your repository folder on your computer. Or, by going to the upper right hand corner in R Studio and clicking the arrow next to where it says Project: (None). You should see your project come up in that list if you've used it recently. You could also go to File --> Open Project and navigate to your .Rproj file. 
 
+[github folder link](https://github.com/tch8/stats112_/tree/main/weekly%20exercise%20%236)
+
+[md file link](https://github.com/tch8/stats112_/blob/main/weekly%20exercise%20%236/Weekly-exercise-6-TC-v2.md)
+
+[shiny app folder on github](https://github.com/tch8/stats112_/tree/main/weekly%20exercise%20%236/covid19TC)
 
 ## Instructions
 
@@ -101,16 +106,18 @@ garden_harvest %>%
          totweight = sum(weight_lbs),
          variety = str_to_title(variety),
          vegetable = str_to_title(vegetable)) %>%
-  group_by(Variety, month) %>% 
+  group_by(variety, month) %>% 
+  select(vegetable, variety, month, totweight) %>% 
   distinct() %>% 
   tibble(Variety = variety,
          Vegetable = vegetable,
          "Total Weight" = totweight, 
-         month = month) %>% 
+         Month = month) %>% 
   gt(rowname_col = "Variety",
      groupname_col = "Vegetable") %>%
   row_group_order(groups = c("Beans", "Carrots", "Tomatoes")) %>%
- fmt_number(columns = vars(c("Total Weight")), decimals = 2) %>% 
+  cols_hide(c("vegetable", "variety", "month", "totweight")) %>% 
+  fmt_number(columns = vars(c("Total Weight")), decimals = 2) %>% 
   tab_header(title = "Total Weight (in Lbs) of Vegetable Varieties") %>% 
   tab_options(row_group.font.weight = "bold") %>% 
   summary_rows(groups = TRUE, 
@@ -166,7 +173,7 @@ garden_mostrecent_cumsum <- garden_harvest %>%
   group_by (variety, date) %>% 
   summarize (total_weight = sum(weight_lb)) %>%
   mutate (cum_sum_weight = cumsum(total_weight),
-          Variety = str_to_title(variety),
+          variety = str_to_title(variety),
           date_mr = max(date)) %>% 
   filter(date == date_mr)
 
@@ -177,13 +184,13 @@ graph1 <- garden_harvest %>%
   group_by (variety, date) %>% 
   summarize (total_weight = sum(weight_lb)) %>%
   mutate (cum_sum_weight = cumsum(total_weight),
-          Variety = str_to_title(variety)) %>%
+          variety = str_to_title(variety)) %>%
   ggplot (mapping = aes(x = date, 
                         y = cum_sum_weight, 
-                        color = Variety)) +
+                        color = variety)) +
   geom_line() + 
   geom_text(data = garden_mostrecent_cumsum,
-            aes(label = Variety),
+            aes(label = variety),
             hjust = "inward",
             angle = -2) +
   labs(x = "", 
