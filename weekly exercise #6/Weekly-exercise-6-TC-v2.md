@@ -94,7 +94,15 @@ fakegarden_harvest <- read_csv("https://raw.githubusercontent.com/llendway/scrap
 
 ```r
 grocery_data <- read_csv("Groceries_dataset.csv")
+
+head(grocery_data)
 ```
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Member_number"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Date"],"name":[2],"type":["chr"],"align":["left"]},{"label":["itemDescription"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"1808","2":"21-07-2015","3":"tropical fruit"},{"1":"2552","2":"05-01-2015","3":"whole milk"},{"1":"2300","2":"19-09-2015","3":"pip fruit"},{"1":"1187","2":"12-12-2015","3":"other vegetables"},{"1":"3037","2":"01-02-2015","3":"whole milk"},{"1":"4941","2":"14-02-2015","3":"rolls/buns"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 
   4. CHALLENGE(not graded): Write code to replicate the table shown below (open the .html file to see it) created from the `garden_harvest` data as best as you can. When you get to coloring the cells, I used the following line of code for the `colors` argument:
   
@@ -135,12 +143,12 @@ garden_harvest %>%
                domain = NULL))
 ```
 
-<!--html_preserve--><div id="opqfnredhq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<!--html_preserve--><div id="kzkxhcvmzb" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#opqfnredhq .gt_table {
+#kzkxhcvmzb .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -165,7 +173,7 @@ garden_harvest %>%
   border-left-color: #D3D3D3;
 }
 
-#opqfnredhq .gt_heading {
+#kzkxhcvmzb .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -177,7 +185,7 @@ garden_harvest %>%
   border-right-color: #D3D3D3;
 }
 
-#opqfnredhq .gt_title {
+#kzkxhcvmzb .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -187,7 +195,7 @@ garden_harvest %>%
   border-bottom-width: 0;
 }
 
-#opqfnredhq .gt_subtitle {
+#kzkxhcvmzb .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -197,13 +205,13 @@ garden_harvest %>%
   border-top-width: 0;
 }
 
-#opqfnredhq .gt_bottom_border {
+#kzkxhcvmzb .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#opqfnredhq .gt_col_headings {
+#kzkxhcvmzb .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -218,7 +226,7 @@ garden_harvest %>%
   border-right-color: #D3D3D3;
 }
 
-#opqfnredhq .gt_col_heading {
+#kzkxhcvmzb .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -238,7 +246,7 @@ garden_harvest %>%
   overflow-x: hidden;
 }
 
-#opqfnredhq .gt_column_spanner_outer {
+#kzkxhcvmzb .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -250,15 +258,15 @@ garden_harvest %>%
   padding-right: 4px;
 }
 
-#opqfnredhq .gt_column_spanner_outer:first-child {
+#kzkxhcvmzb .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#opqfnredhq .gt_column_spanner_outer:last-child {
+#kzkxhcvmzb .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#opqfnredhq .gt_column_spanner {
+#kzkxhcvmzb .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -270,7 +278,7 @@ garden_harvest %>%
   width: 100%;
 }
 
-#opqfnredhq .gt_group_heading {
+#kzkxhcvmzb .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -292,7 +300,7 @@ garden_harvest %>%
   vertical-align: middle;
 }
 
-#opqfnredhq .gt_empty_group_heading {
+#kzkxhcvmzb .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -307,15 +315,15 @@ garden_harvest %>%
   vertical-align: middle;
 }
 
-#opqfnredhq .gt_from_md > :first-child {
+#kzkxhcvmzb .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#opqfnredhq .gt_from_md > :last-child {
+#kzkxhcvmzb .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#opqfnredhq .gt_row {
+#kzkxhcvmzb .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -334,7 +342,7 @@ garden_harvest %>%
   overflow-x: hidden;
 }
 
-#opqfnredhq .gt_stub {
+#kzkxhcvmzb .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -346,7 +354,7 @@ garden_harvest %>%
   padding-left: 12px;
 }
 
-#opqfnredhq .gt_summary_row {
+#kzkxhcvmzb .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -356,7 +364,7 @@ garden_harvest %>%
   padding-right: 5px;
 }
 
-#opqfnredhq .gt_first_summary_row {
+#kzkxhcvmzb .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -366,7 +374,7 @@ garden_harvest %>%
   border-top-color: #D3D3D3;
 }
 
-#opqfnredhq .gt_grand_summary_row {
+#kzkxhcvmzb .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -376,7 +384,7 @@ garden_harvest %>%
   padding-right: 5px;
 }
 
-#opqfnredhq .gt_first_grand_summary_row {
+#kzkxhcvmzb .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -386,11 +394,11 @@ garden_harvest %>%
   border-top-color: #D3D3D3;
 }
 
-#opqfnredhq .gt_striped {
+#kzkxhcvmzb .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#opqfnredhq .gt_table_body {
+#kzkxhcvmzb .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -399,7 +407,7 @@ garden_harvest %>%
   border-bottom-color: #D3D3D3;
 }
 
-#opqfnredhq .gt_footnotes {
+#kzkxhcvmzb .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -413,13 +421,13 @@ garden_harvest %>%
   border-right-color: #D3D3D3;
 }
 
-#opqfnredhq .gt_footnote {
+#kzkxhcvmzb .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#opqfnredhq .gt_sourcenotes {
+#kzkxhcvmzb .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -433,41 +441,41 @@ garden_harvest %>%
   border-right-color: #D3D3D3;
 }
 
-#opqfnredhq .gt_sourcenote {
+#kzkxhcvmzb .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#opqfnredhq .gt_left {
+#kzkxhcvmzb .gt_left {
   text-align: left;
 }
 
-#opqfnredhq .gt_center {
+#kzkxhcvmzb .gt_center {
   text-align: center;
 }
 
-#opqfnredhq .gt_right {
+#kzkxhcvmzb .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#opqfnredhq .gt_font_normal {
+#kzkxhcvmzb .gt_font_normal {
   font-weight: normal;
 }
 
-#opqfnredhq .gt_font_bold {
+#kzkxhcvmzb .gt_font_bold {
   font-weight: bold;
 }
 
-#opqfnredhq .gt_font_italic {
+#kzkxhcvmzb .gt_font_italic {
   font-style: italic;
 }
 
-#opqfnredhq .gt_super {
+#kzkxhcvmzb .gt_super {
   font-size: 65%;
 }
 
-#opqfnredhq .gt_footnote_marks {
+#kzkxhcvmzb .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
